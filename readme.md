@@ -22,11 +22,3 @@ Clone the repo & run `platform build`
 ## Configuration
 
 Please refer to the variables in the code, they have comments next to them explaining what you can configure.
-
-## Licensing
-
-One really important part: Give your project a proper license. Here you should
-state what the license is and how to find the text version of the license.
-Something like:
-
-"The code in this project is licensed under MIT license."
