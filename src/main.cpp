@@ -14,12 +14,17 @@
 // https://github.com/FastLED/FastLED
 #include "FastLED.h";
 // https://github.com/rocketscream/Low-Power/
-# include "LowPower.h";
+#include "LowPower.h";
 
-void setup() {
+#include "leds.h"
 
+Leds leds;
+
+void setup()
+{
 }
 
-void loop() {
-
+void loop()
+{
+  leds.loop();
 }
