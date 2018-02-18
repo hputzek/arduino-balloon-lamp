@@ -11,20 +11,20 @@
 
 // https://github.com/mathertel/OneButton/
 #include "OneButton.h";
-// https://github.com/FastLED/FastLED
-#include "FastLED.h";
+
 // https://github.com/rocketscream/Low-Power/
 #include "LowPower.h";
 
 #include "leds.h"
 
-Leds leds;
+Leds balloonLeds;
 
 void setup()
 {
+  Serial.begin(9600);
 }
 
 void loop()
 {
-  leds.loop();
+  balloonLeds.loop();
 }
