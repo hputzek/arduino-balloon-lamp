@@ -13,10 +13,12 @@ public:
   void loop();
 
 private:
+  int8_t currentPreset;
   CRGBPalette16 currentPalette;
   TBlendType currentBlending;
   uint8_t startIndex;
   CRGB leds[];
   void FillLEDsFromPaletteColors(uint8_t);
+  void pPolice();
 };
 #endif
