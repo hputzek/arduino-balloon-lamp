@@ -3,7 +3,7 @@
 #include "Arduino.h"
 
 // https://github.com/FastLED/FastLED
-#include "FastLED.h";
+#include "FastLED.h"
 
 class Leds
 {
@@ -11,6 +11,7 @@ public:
   Leds();
   void setup();
   void loop();
+  void incrementPreset();
 
 private:
   int8_t currentPreset;
@@ -20,5 +21,6 @@ private:
   CRGB leds[];
   void FillLEDsFromPaletteColors(uint8_t);
   void pPolice();
+  void pOrangePinkYellow();
 };
 #endif

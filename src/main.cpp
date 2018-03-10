@@ -8,23 +8,41 @@
 
 */
 
-
 // https://github.com/mathertel/OneButton/
-#include "OneButton.h";
+#include "OneButton.h"
 
 // https://github.com/rocketscream/Low-Power/
-#include "LowPower.h";
+// #include "LowPower.h"
 
 #include "leds.h"
 
-Leds balloonLeds;
+#define BUTTON1_PIN A2
+#define INVERT true
+
+#define FADER_1_PIN 0
+#define FADER_2_PIN 1
+
+Leds *balloonLeds;
+
+// init control button
+OneButton button1(BUTTON1_PIN, INVERT);
+
+void handleButton1Click() {
+  balloonLeds->incrementPreset();
+}
 
 void setup()
 {
-  Serial.begin(9600);
+  balloonLeds = new Leds();
+  //Serial.begin(9600);
+  // handle buttons
+  button1.attachClick(handleButton1Click);
 }
 
 void loop()
 {
-  balloonLeds.loop();
+  // handle IO
+  button1.tick();
+  // handle leds
+  balloonLeds->loop();
 }
