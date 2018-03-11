@@ -27,7 +27,8 @@ uint8_t speed = 100;
 // currently active preset
 uint8_t currentPreset = 0;
 
-struct preset {
+struct preset
+{
     uint8_t fader1;
     uint8_t fader2;
 };
@@ -35,13 +36,11 @@ struct preset {
 // Array of structs holding preset data
 preset presets[NUMBER_OF_PRESETS];
 
-
-
 Leds::Leds()
 {
     // setup FASTLED
     FastLED.addLeds<LED_TYPE, LED_DATA_PIN, LED_COLOR_ORDER>(leds, NUMBER_OF_LEDS).setCorrection(TypicalSMD5050);
-    //currentPalette = Pink_Yellow_Orange_1_gp;
+    currentPalette = Pink_Yellow_Orange_1_gp;
     currentBlending = LINEARBLEND;
     FastLED.setBrightness(brightness);
 };
@@ -62,21 +61,28 @@ void Leds::loop()
     FastLED.delay(1000 / UPDATES_PER_SECOND);
 };
 
-void Leds::incrementPreset() {
-     if(currentPreset < NUMBER_OF_PRESETS -1) {
-         currentPreset ++;
-     } else {
-         currentPreset = 0;
-     }
+void Leds::incrementPreset()
+{
+    if (currentPreset < NUMBER_OF_PRESETS - 1)
+    {
+        currentPreset++;
+    }
+    else
+    {
+        currentPreset = 0;
+    }
 }
 
 void Leds::FillLEDsFromPaletteColors(uint8_t colorIndex)
 {
-    uint8_t brightness = 255;
+    uint8_t brightness = 100;
     for (uint8_t i = 0; i < NUMBER_OF_LEDS; i++)
     {
-        leds[i] = ColorFromPalette(currentPalette, colorIndex, brightness, currentBlending);
-        colorIndex += (255/NUMBER_OF_LEDS);
+        CRGB color = ColorFromPalette(currentPalette, colorIndex, brightness, currentBlending);
+        CHSV hsvColor = rgb2hsv_approximate(color);
+        hsvColor.hue += rotateHue;
+        leds[i] = hsvColor;
+        colorIndex += (255 / NUMBER_OF_LEDS);
     }
 }
 
@@ -99,8 +105,13 @@ void Leds::pPolice()
 
 void Leds::pOrangePinkYellow()
 {
-    currentPalette = Pink_Yellow_Orange_1_gp;
+    int timer = 0;
+    currentPalette = patriot_gp;
     FillLEDsFromPaletteColors(colorIndex);
-    colorIndex += (255/40);
+    if (timer % 70 == 0)
+    {
+        rotateHue++;
+    }
+    colorIndex += (255 / 40);
     FastLED.delay(10);
 }
