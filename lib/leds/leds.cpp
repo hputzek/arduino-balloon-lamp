@@ -6,6 +6,7 @@
 #define LED_DATA_PIN 5
 #define LED_COLOR_ORDER GRB
 #define UPDATES_PER_SECOND 60
+#define MAXIMUM_TIMER_VALUE_IN_MS 10000
 
 // led array
 CRGB leds[NUMBER_OF_LEDS];
@@ -36,6 +37,10 @@ struct preset
 // Array of structs holding preset data
 preset presets[NUMBER_OF_PRESETS];
 
+// Timers used in conjunction with the faders
+RBD::Timer timer1(200);
+RBD::Timer timer2(200);
+
 Leds::Leds()
 {
     // setup FASTLED
@@ -43,6 +48,9 @@ Leds::Leds()
     currentPalette = Pink_Yellow_Orange_1_gp;
     currentBlending = LINEARBLEND;
     FastLED.setBrightness(brightness);
+    // setup Timers
+    timer1.restart();
+    timer2.restart();
 };
 
 void Leds::loop()
@@ -54,11 +62,21 @@ void Leds::loop()
         this->pPolice();
         break;
     case 1:
-        this->pOrangePinkYellow();
+        currentPalette = Pink_Yellow_Orange_1_gp;
+        this->paletteMode();
         break;
     }
     FastLED.show();
-    FastLED.delay(1000 / UPDATES_PER_SECOND);
+    // FastLED.delay(1000 / UPDATES_PER_SECOND);
+    // handle timers
+    if (timer1.isExpired())
+    {
+        timer1.restart();
+    }
+    if (timer2.isExpired())
+    {
+        timer2.restart();
+    }
 };
 
 void Leds::incrementPreset()
@@ -73,9 +91,8 @@ void Leds::incrementPreset()
     }
 }
 
-void Leds::FillLEDsFromPaletteColors(uint8_t colorIndex)
+void Leds::fillLEDsFromPaletteColors(uint8_t colorIndex)
 {
-    uint8_t brightness = 100;
     for (uint8_t i = 0; i < NUMBER_OF_LEDS; i++)
     {
         CRGB color = ColorFromPalette(currentPalette, colorIndex, brightness, currentBlending);
@@ -84,6 +101,28 @@ void Leds::FillLEDsFromPaletteColors(uint8_t colorIndex)
         leds[i] = hsvColor;
         colorIndex += (255 / NUMBER_OF_LEDS);
     }
+}
+
+uint8_t Leds::getFader1()
+{
+    return presets[currentPreset].fader1;
+}
+
+void Leds::setFader1(uint8_t value)
+{
+    presets[currentPreset].fader1 = constrain(value, 1, 255);
+    timer1.setTimeout(presets[currentPreset].fader1 / 2);
+}
+
+uint8_t Leds::getFader2()
+{
+    return presets[currentPreset].fader2;
+}
+
+void Leds::setFader2(uint8_t value)
+{
+    presets[currentPreset].fader2 = constrain(value, 1, 255);
+    timer2.setTimeout(presets[currentPreset].fader2 / 2);
 }
 
 void Leds::pPolice()
@@ -103,15 +142,18 @@ void Leds::pPolice()
     progress++;
 }
 
-void Leds::pOrangePinkYellow()
+void Leds::paletteMode()
 {
-    int timer = 0;
-    currentPalette = patriot_gp;
-    FillLEDsFromPaletteColors(colorIndex);
-    if (timer % 70 == 0)
+    if (timer1.isExpired())
     {
         rotateHue++;
     }
-    colorIndex += (255 / 40);
-    FastLED.delay(10);
+    if (timer2.isExpired())
+    {
+        colorIndex ++;
+    }
+    if (timer1.isExpired() || timer2.isExpired())
+    {
+        fillLEDsFromPaletteColors(colorIndex);
+    }
 }
