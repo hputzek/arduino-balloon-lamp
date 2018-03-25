@@ -21,7 +21,9 @@ public:
   void setFader2(uint8_t value);
   uint8_t getFader2();
   void setBrightness(uint8_t value);
-  void saveCurrentPreset();
+  uint8_t getSavedBrightness();
+  void saveCurrentPresetAsDefault();
+  void blinkSuccess();
 
 private:
   void fillLEDsFromPaletteColors(uint8_t colorIndex);

@@ -6,7 +6,6 @@
 #define LED_DATA_PIN 5
 #define LED_COLOR_ORDER GRB
 #define UPDATES_PER_SECOND 60
-#define MAXIMUM_TIMER_VALUE_IN_MS 10000
 
 // EEPROM adresses
 #define EEPROM_PRESET 0
@@ -53,9 +52,12 @@ Leds::Leds()
     EEPROM.begin();
     brightness = EEPROM.read(EEPROM_BRIGHTNESS);
     uint8_t loadedPreset = EEPROM.read(EEPROM_PRESET);
-    if(loadedPreset > NUMBER_OF_PRESETS) {
+    if (loadedPreset > NUMBER_OF_PRESETS)
+    {
         currentPreset = 0;
-    } else {
+    }
+    else
+    {
         currentPreset = loadedPreset;
     }
     colorIndex = EEPROM.read(EEPROM_COLOR_INDEX);
@@ -114,7 +116,8 @@ void Leds::loop()
 
 void Leds::incrementPreset()
 {
-    if(currentPreset == 0) {
+    if (currentPreset == 0)
+    {
         EEPROM.update(EEPROM_BRIGHTNESS, brightness);
     }
     if (currentPreset < NUMBER_OF_PRESETS - 1)
@@ -168,10 +171,29 @@ void Leds::setBrightness(uint8_t value)
     FastLED.setBrightness(brightness);
 }
 
-void Leds::saveCurrentPreset() {
+uint8_t Leds::getSavedBrightness()
+{
+    return EEPROM.read(EEPROM_BRIGHTNESS);
+}
+
+void Leds::saveCurrentPresetAsDefault()
+{
     EEPROM.update(EEPROM_PRESET, currentPreset);
     EEPROM.update(EEPROM_COLOR_INDEX, colorIndex);
     EEPROM.update(EEPROM_ROTATE_HUE, rotateHue);
+}
+
+void Leds::blinkSuccess()
+{
+    FastLED.setBrightness(255);
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        fill_solid(leds, NUMBER_OF_LEDS, CRGB::Green);
+        FastLED.delay(200);
+        FastLED.clear();
+        FastLED.delay(150);
+    }
+    FastLED.setBrightness(brightness);
 }
 
 void Leds::pPolice()
