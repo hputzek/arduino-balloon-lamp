@@ -58,3 +58,19 @@ DEFINE_GRADIENT_PALETTE(Pink_Yellow_Orange_1_gp){
     106, 255, 63, 0,
     168, 194, 13, 6,
     255, 146, 1, 37};
+
+// Gradient palette "Fuschia_6_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/ds/fuschia/tn/Fuschia-6.png.index.html
+// converted for FastLED with gammas (2.6, 2.2, 2.5)
+// Size: 36 bytes of program space.
+
+DEFINE_GRADIENT_PALETTE( Fuschia_6_gp ) {
+    0, 148,  6,180,
+   31, 142, 16,197,
+   63, 135, 31,216,
+   95,  90, 17,226,
+  127,  56,  8,233,
+  159,  98,  7,192,
+  191, 153,  6,156,
+  223,  98,  7,192,
+  255,  56,  8,233};

@@ -17,6 +17,9 @@
 // https://github.com/dxinteractive/ResponsiveAnalogRead
 #include "ResponsiveAnalogRead.h"
 
+// https://github.com/alextaujenis/RBD_Timer
+#include "RBD_Timer.h"
+
 #include "leds.h"
 
 #define BUTTON1_PIN A2
@@ -43,12 +46,13 @@ void handleButton1Click() {
 
 void setup()
 {
-  fader1.setActivityThreshold(10);
-  fader2.setActivityThreshold(10);
   balloonLeds = new Leds();
   //Serial.begin(9600);
   // handle buttons
   button1.attachClick(handleButton1Click);
+  // set initial fader value
+  balloonLeds->setFader1(map(fader1.getValue(),0,MAX_FADER_VAL,0,255));
+  balloonLeds->setFader2(map(fader2.getValue(),0,MAX_FADER_VAL,0,255));
 }
 
 void loop()
