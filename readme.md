@@ -1,6 +1,7 @@
 ![Logo of the project](https://raw.githubusercontent.com/jehna/readme-best-practices/master/sample-logo.png)
 
 [![Licence](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-1.png)](http://www.wtfpl.net/)
+![Built with love](https://forthebadge.com/images/badges/built-with-love.svg)
 
 # [in progress] Arduino balloon LED lamp
 > a little hobby project together with my nephew
