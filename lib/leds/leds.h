@@ -24,6 +24,7 @@ public:
   uint8_t getSavedBrightness();
   void saveCurrentPresetAsDefault();
   void blinkSuccess();
+  void showBatteryLevel(uint8_t percentage);
 
 private:
   void fillLEDsFromPaletteColors(uint8_t colorIndex);

@@ -196,6 +196,15 @@ void Leds::blinkSuccess()
     FastLED.setBrightness(brightness);
 }
 
+void Leds::showBatteryLevel(uint8_t percentage)
+{
+    FastLED.setBrightness(255);
+    uint8_t mappedPercentage = map(percentage, 0, 100, 0, 255);
+    fill_solid(leds, NUMBER_OF_LEDS, CRGB(255 - mappedPercentage, mappedPercentage, 0));
+    FastLED.delay(2000);
+    FastLED.setBrightness(brightness);
+}
+
 void Leds::pPolice()
 {
     if (NUMBER_OF_LEDS >= progress)

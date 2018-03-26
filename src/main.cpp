@@ -20,13 +20,19 @@
 // https://github.com/alextaujenis/RBD_Timer
 #include "RBD_Timer.h"
 
+// https://github.com/rlogiacco/BatterySense/
+#include <Battery.h>
+
 #include "leds.h"
 
 #define BUTTON1_PIN 2
 #define INVERT true
 
-#define FADER_1_PIN 0
-#define FADER_2_PIN 1
+#define FADER_1_PIN A0
+#define FADER_2_PIN A1
+
+#define BATTERY_SENSE_PIN A2
+
 #define SLEEP true
 // Maximum value for the faders
 #define MAX_FADER_VAL 1022
@@ -43,6 +49,9 @@ ResponsiveAnalogRead fader2(FADER_2_PIN, SLEEP);
 // sleep timer
 #define SLEEP_10_MINUTES 600000
 RBD::Timer sleepTimer(SLEEP_10_MINUTES);
+
+// battery status
+Battery battery(2550, 3700, BATTERY_SENSE_PIN);
 
 void handleButton1Click()
 {
@@ -79,6 +88,10 @@ void goToSleep()
 void setup()
 {
   balloonLeds = new Leds();
+  // battery level
+  battery.begin();
+  balloonLeds->showBatteryLevel(battery.level());
+  
   sleepTimer.stop();
   //Serial.begin(9600);
   // handle buttons
@@ -118,4 +131,11 @@ void loop()
   }
   // handle leds
   balloonLeds->loop();
+
+  // shut down if battery level gets too low
+  if(battery.level() <= 1) {
+    balloonLeds->showBatteryLevel(battery.level());
+    balloonLeds->showBatteryLevel(battery.level());
+    goToSleep();
+  }
 }
