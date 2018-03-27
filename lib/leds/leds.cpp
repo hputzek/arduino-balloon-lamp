@@ -12,6 +12,8 @@
 #define EEPROM_BRIGHTNESS 1
 #define EEPROM_COLOR_INDEX 2
 #define EEPROM_ROTATE_HUE 3
+#define EEPROM_FADER_1 4
+#define EEPROM_FADER_2 5
 
 // led array
 CRGB leds[NUMBER_OF_LEDS];
@@ -33,6 +35,9 @@ uint8_t speed = 100;
 // currently active preset
 uint8_t currentPreset = 0;
 
+uint8_t fader1LastValue = 0;
+uint8_t fader2LastValue = 0;
+
 struct preset
 {
     uint8_t fader1;
@@ -50,7 +55,7 @@ Leds::Leds()
 {
     // restore state
     EEPROM.begin();
-    brightness = EEPROM.read(EEPROM_BRIGHTNESS);
+    brightness = (getSavedBrightness() > 0) ? getSavedBrightness() : 100;
     uint8_t loadedPreset = EEPROM.read(EEPROM_PRESET);
     if (loadedPreset > NUMBER_OF_PRESETS)
     {
@@ -62,6 +67,8 @@ Leds::Leds()
     }
     colorIndex = EEPROM.read(EEPROM_COLOR_INDEX);
     rotateHue = EEPROM.read(EEPROM_ROTATE_HUE);
+    presets[currentPreset].fader1 = EEPROM.read(EEPROM_FADER_1);
+    presets[currentPreset].fader2 = EEPROM.read(EEPROM_FADER_2);
 
     // setup FASTLED
     FastLED.addLeds<LED_TYPE, LED_DATA_PIN, LED_COLOR_ORDER>(leds, NUMBER_OF_LEDS).setCorrection(TypicalSMD5050);
@@ -145,23 +152,25 @@ void Leds::fillLEDsFromPaletteColors(uint8_t colorIndex)
 
 uint8_t Leds::getFader1()
 {
-    return presets[currentPreset].fader1;
+    return (presets[currentPreset].fader1) ? presets[currentPreset].fader1 : fader1LastValue;
 }
 
 void Leds::setFader1(uint8_t value)
 {
     presets[currentPreset].fader1 = constrain(value, 1, 255);
+    fader1LastValue = presets[currentPreset].fader1;
     timer1.setTimeout(presets[currentPreset].fader1 / 2);
 }
 
 uint8_t Leds::getFader2()
 {
-    return presets[currentPreset].fader2;
+    return (presets[currentPreset].fader2) ? presets[currentPreset].fader2 : fader2LastValue;
 }
 
 void Leds::setFader2(uint8_t value)
 {
     presets[currentPreset].fader2 = constrain(value, 1, 255);
+    fader2LastValue = presets[currentPreset].fader2;
     timer2.setTimeout(presets[currentPreset].fader2 / 2);
 }
 
@@ -181,6 +190,8 @@ void Leds::saveCurrentPresetAsDefault()
     EEPROM.update(EEPROM_PRESET, currentPreset);
     EEPROM.update(EEPROM_COLOR_INDEX, colorIndex);
     EEPROM.update(EEPROM_ROTATE_HUE, rotateHue);
+    EEPROM.update(EEPROM_FADER_1, fader1LastValue);
+    EEPROM.update(EEPROM_FADER_2, fader2LastValue);
 }
 
 void Leds::blinkSuccess()
@@ -207,6 +218,7 @@ void Leds::showBatteryLevel(uint8_t percentage)
 
 void Leds::pPolice()
 {
+    FastLED.setBrightness(255);
     if (NUMBER_OF_LEDS >= progress)
     {
         leds[progress] = CRGB::Blue;
@@ -220,6 +232,7 @@ void Leds::pPolice()
     }
     leds[progress - 4] = CRGB::Black;
     progress++;
+    FastLED.setBrightness(brightness);
 }
 
 void Leds::pFixedColorMode()

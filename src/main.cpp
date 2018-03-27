@@ -99,9 +99,6 @@ void setup()
   button1.attachClick(handleButton1Click);
   button1.attachDoubleClick(handleButton1DoubleClick);
   button1.attachLongPressStart(handleButton1Hold);
-  // set initial fader value
-  balloonLeds->setFader1(map(fader1.getValue(), 0, MAX_FADER_VAL, 0, 255));
-  balloonLeds->setFader2(map(fader2.getValue(), 0, MAX_FADER_VAL, 0, 255));
 }
 
 void loop()
@@ -122,7 +119,7 @@ void loop()
 
   if (sleepTimer.isActive())
   {
-    balloonLeds->setBrightness(map(sleepTimer.getInversePercentValue(), 0, 100, 0, 200));
+    balloonLeds->setBrightness(map(sleepTimer.getInversePercentValue(), 0, 100, 0, 120));
   }
   if (sleepTimer.onExpired())
   {
